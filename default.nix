@@ -1,24 +1,21 @@
-{ pkgs ? import (import nix/fetch-nixpkgs.nix) {}
+{ pkgs ? import nixpkgs {}
 }:
 
-with pkgs;
-
-stdenv.mkDerivation {
+pkgs.stdenv.mkDerivation {
   name = "LaTeX-env";
-  buildInputs = [ (texlive.combine {
-                    inherit (texlive)
-                      scheme-small
-
-                      # Add other LaTeX libraries (packages) here as needed, e.g:
-                      # stmaryrd amsmath pgf
-
-                      # build tools
-                      latexmk
-                      ;
-                  })
-
-                ];
   src = ./.;
+  buildInputs = [
+    (pkgs.texlive.combine {
+      inherit (pkgs.texlive)
+        scheme-small
+
+      	# Add other LaTeX libraries (packages) here as needed, e.g:
+        # stmaryrd amsmath pgf
+
+        # build tools
+        latexmk;
+      })
+  ];
   buildPhase = "make";
 
   meta = with lib; {
